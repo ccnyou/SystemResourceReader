@@ -13,6 +13,7 @@
 		A6693CA01D1C0D88008A3E41 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A6693C9E1D1C0D88008A3E41 /* Main.storyboard */; };
 		A6693CA21D1C0D88008A3E41 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6693CA11D1C0D88008A3E41 /* Assets.xcassets */; };
 		A6693CA51D1C0D88008A3E41 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A6693CA31D1C0D88008A3E41 /* LaunchScreen.storyboard */; };
+		A6693CB31D1C11CA008A3E41 /* AlbumReader.m in Sources */ = {isa = PBXBuildFile; fileRef = A6693CB21D1C11CA008A3E41 /* AlbumReader.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		A6693CA11D1C0D88008A3E41 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A6693CA41D1C0D88008A3E41 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A6693CA61D1C0D88008A3E41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A6693CB11D1C11CA008A3E41 /* AlbumReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumReader.h; sourceTree = "<group>"; };
+		A6693CB21D1C11CA008A3E41 /* AlbumReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumReader.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +86,8 @@
 		A6693CAC1D1C0DAF008A3E41 /* AlbumReader */ = {
 			isa = PBXGroup;
 			children = (
+				A6693CB11D1C11CA008A3E41 /* AlbumReader.h */,
+				A6693CB21D1C11CA008A3E41 /* AlbumReader.m */,
 			);
 			name = AlbumReader;
 			path = ../../AlbumReader;
@@ -158,6 +163,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6693CB31D1C11CA008A3E41 /* AlbumReader.m in Sources */,
 				A6693C9D1D1C0D88008A3E41 /* ViewController.m in Sources */,
 				A6693C9A1D1C0D88008A3E41 /* AppDelegate.m in Sources */,
 				A6693C971D1C0D88008A3E41 /* main.m in Sources */,

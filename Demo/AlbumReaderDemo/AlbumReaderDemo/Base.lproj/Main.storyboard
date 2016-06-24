@@ -3,6 +3,8 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -28,8 +30,8 @@
                                     <action selector="_onTestTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="e2g-if-Ur9"/>
                                 </connections>
                             </button>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" pagingEnabled="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="vxx-4c-LmK">
-                                <rect key="frame" x="0.0" y="276" width="320" height="292"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="vxx-4c-LmK">
+                                <rect key="frame" x="-4" y="284" width="328" height="284"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="1" minimumInteritemSpacing="1" id="Hup-t6-zpt">
                                     <size key="itemSize" width="50" height="50"/>
@@ -39,15 +41,25 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="TestCell" id="4kI-F4-dW7">
-                                        <rect key="frame" x="0.0" y="0.0" width="100" height="292"/>
+                                        <rect key="frame" x="0.0" y="-4" width="200" height="292"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="100" height="292"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="200" height="292"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" tag="1000" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cZQ-YJ-TPd">
+                                                    <rect key="frame" x="0.0" y="0.0" width="200" height="292"/>
+                                                </imageView>
+                                            </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
-                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        <size key="customSize" width="100" height="292"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottomMargin" secondItem="cZQ-YJ-TPd" secondAttribute="bottom" constant="-8" id="1DI-u4-6rL"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="cZQ-YJ-TPd" secondAttribute="trailing" constant="-8" id="FY0-5y-Iru"/>
+                                            <constraint firstItem="cZQ-YJ-TPd" firstAttribute="top" secondItem="4kI-F4-dW7" secondAttribute="topMargin" constant="-8" id="diH-Ez-Ooe"/>
+                                            <constraint firstItem="cZQ-YJ-TPd" firstAttribute="leading" secondItem="4kI-F4-dW7" secondAttribute="leadingMargin" constant="-8" id="skC-e1-04t"/>
+                                        </constraints>
+                                        <size key="customSize" width="200" height="292"/>
                                     </collectionViewCell>
                                 </cells>
                                 <connections>
@@ -60,8 +72,15 @@
                         <constraints>
                             <constraint firstItem="bTa-7R-bwo" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="GmS-qk-AXy"/>
                             <constraint firstItem="bTa-7R-bwo" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="101" id="QPy-wv-gKr"/>
+                            <constraint firstItem="vxx-4c-LmK" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="RUr-3P-XRC"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="vxx-4c-LmK" secondAttribute="bottom" id="Uhp-jl-Kyg"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="vxx-4c-LmK" secondAttribute="trailing" constant="-20" id="tWM-zF-CGC"/>
+                            <constraint firstItem="vxx-4c-LmK" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.5" id="u62-uS-XOV"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="collectionView" destination="vxx-4c-LmK" id="pUY-g9-483"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

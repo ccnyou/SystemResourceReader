@@ -8,6 +8,15 @@
 
 #import "AlbumReader.h"
 
+@interface AlbumReaderPhoto ()
+
+@property (nonatomic, readonly) NSURL* url;
+
+- (instancetype)initWithUrl:(NSURL *)url;
+
+@end
+
+
 @interface AlbumReader ()
 
 @property (nonatomic, strong) ALAssetsLibrary* assetsLibrary;
@@ -22,6 +31,19 @@ static NSString* const kAlbumReaderErrorDomain = @"com.albumreader.error";
 
 + (instancetype)reader {
     return [[AlbumReader alloc] init];
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self _addObservers];
+    }
+    
+    return self;
+}
+
+- (void)dealloc {
+    [self _removeObservers];
 }
 
 - (ALAssetsLibrary *)assetsLibrary {
@@ -54,6 +76,70 @@ static NSString* const kAlbumReaderErrorDomain = @"com.albumreader.error";
     }
 }
 
+- (void)readPhotos:(AlbumReaderReadPhotosSuccessBlock)success failure:(AlbumReaderReadPhotosFailureBlock)failure {
+    self.readPhotosSuccessBlock = success;
+    self.readPhotosFailureBlock = failure;
+    
+    NSMutableArray* groups = [[NSMutableArray alloc] init];
+    void (^enumGroupBlock)(ALAssetsGroup *group, BOOL *stop) = ^(ALAssetsGroup *group, BOOL *stop) {
+        if (group) {
+            [groups addObject:group];
+        } else {
+            [self _enumGroups:groups];
+        }
+    };
+    
+    [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos
+                                      usingBlock:enumGroupBlock
+                                    failureBlock:failure];
+}
+
+- (void)imageOfPhoto:(AlbumReaderPhoto *)photo
+              option:(AlbumReaderImageOption)option
+             success:(void (^)(UIImage *image))success
+             failure:(void (^)(NSError *))failure
+{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        ALAssetsLibrary* assetsLibrary = self.assetsLibrary;
+        [assetsLibrary assetForURL:photo.url resultBlock:^(ALAsset *asset) {
+            UIImage* image = nil;
+            if (option == AlbumReaderImageOptionFullScreen) {
+                ALAssetRepresentation* presentation = [asset defaultRepresentation];
+                CGImageRef imageRef = [presentation fullScreenImage];
+                image = [UIImage imageWithCGImage:imageRef];
+            } else if (option == AlbumReaderImageOptionOriginal) {
+                ALAssetRepresentation* presentation = [asset defaultRepresentation];
+                CGImageRef imageRef = [presentation fullResolutionImage];
+                image = [UIImage imageWithCGImage:imageRef];
+            } else if (option == AlbumReaderImageOptionThumbnail) {
+                CGImageRef imageRef = [asset thumbnail];
+                image = [UIImage imageWithCGImage:imageRef];
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                success(image);
+            });
+        } failureBlock:failure];
+    });
+}
+
+#pragma mark - Private
+
+- (void)_addObservers {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(_onMemoryWarning:)
+                                                 name:UIApplicationDidReceiveMemoryWarningNotification
+                                               object:nil];
+}
+
+- (void)_removeObservers {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)_onMemoryWarning:(id)notification {
+    NSLog(@"%s %d memory warning", __FUNCTION__, __LINE__);
+}
+
 - (void)_enumGroups:(NSArray *)groups {
     if (groups.count <= 0) {
         if (self.readPhotosFailureBlock) {
@@ -66,40 +152,38 @@ static NSString* const kAlbumReaderErrorDomain = @"com.albumreader.error";
         return;
     }
     
+    NSMutableArray* results = [[NSMutableArray alloc] init];
     for (ALAssetsGroup* group in groups) {
         if (![group isKindOfClass:[ALAssetsGroup class]]) {
             continue;
         }
         
         [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-            NSLog(@"%s %d result = %@, stop = %@", __FUNCTION__, __LINE__, result, @(*stop));
+            if (result) {
+                NSURL* url = [[result defaultRepresentation] url];
+                AlbumReaderPhoto* photo = [[AlbumReaderPhoto alloc] initWithUrl:url];
+                [results addObject:photo];
+            } else {
+                if (self.readPhotosSuccessBlock) {
+                    self.readPhotosSuccessBlock(results);
+                    self.assetsLibrary = nil;
+                }
+            }
         }];
     }
 }
 
-- (void)readPhotos:(AlbumReaderReadPhotosSuccessBlock)success failure:(AlbumReaderReadPhotosFailureBlock)failure {
-    self.readPhotosSuccessBlock = success;
-    self.readPhotosFailureBlock = failure;
+@end
+
+@implementation AlbumReaderPhoto
+
+- (instancetype)initWithUrl:(NSURL *)url {
+    self = [super init];
+    if (self) {
+        _url = url;
+    }
     
-    NSMutableArray* groups = [[NSMutableArray alloc] init];
-    void (^enumGroupBlock)(ALAssetsGroup *group, BOOL *stop) = ^(ALAssetsGroup *group, BOOL *stop) {
-        NSLog(@"%s %d group = %@, stop = %@", __FUNCTION__, __LINE__, group, @(*stop));
-        if (group) {
-            [groups addObject:group];
-        } else if (*stop) {
-            [self _enumGroups:groups];
-        } else if (failure) {
-            NSError* error = [NSError errorWithDomain:kAlbumReaderErrorDomain
-                                                 code:-1
-                                             userInfo:@{@"msg": @"enumerateGroupsWithTypes fail"}];
-            failure(error);
-            *stop = YES;
-        }
-    };
-    
-    [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos
-                                      usingBlock:enumGroupBlock
-                                    failureBlock:failure];
+    return self;
 }
 
 @end

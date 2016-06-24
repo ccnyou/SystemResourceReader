@@ -11,6 +11,10 @@
 
 @interface ViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (nonatomic, strong) NSArray* photos;
+@property (nonatomic, strong) AlbumReader* reader;
+
 @end
 
 @implementation ViewController
@@ -25,23 +29,31 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)_readPhotosSuccess:(NSArray *)photos {
+    self.photos = photos;
+    [self.collectionView reloadData];
+}
+
 - (IBAction)_onTestTouched:(id)sender {
-    AlbumReader* reader = [AlbumReader reader];
-    [reader requestAuthorization:^(ALAuthorizationStatus status) {
-        [reader readPhotos:^(NSArray *photos) {
-            
-        } failure:^(NSError *error) {
-            
-        }];
-    } failure:^(NSError *error) {
+    self.reader = [AlbumReader reader];
+    
+    id failure = ^(NSError *error) {
         NSLog(@"%s %d error = %@", __FUNCTION__, __LINE__, error);
-    }];
+    };
+    
+    id success = ^(ALAuthorizationStatus status) {
+        [self.reader readPhotos:^(NSArray *photos) {
+            [self _readPhotosSuccess:photos];
+        } failure:failure];
+    };
+    
+    [self.reader requestAuthorization:success failure:failure];
 }
 
 #pragma mark - UIColloectionView
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 10;
+    return self.photos.count;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
@@ -53,6 +65,14 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"TestCell" forIndexPath:indexPath];
+    UIImageView* imageView = [cell viewWithTag:1000];
+    id photo = [self.photos objectAtIndex:indexPath.row];
+    [self.reader imageOfPhoto:photo option:AlbumReaderImageOptionFullScreen success:^(UIImage *image) {
+        imageView.image = image;
+    } failure:^(NSError *error) {
+        NSLog(@"%s %d error = %@", __FUNCTION__, __LINE__, error);
+    }];
+    
     return cell;
 }
 

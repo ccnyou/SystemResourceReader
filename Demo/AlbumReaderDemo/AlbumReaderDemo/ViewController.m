@@ -29,25 +29,36 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)_readPhotosSuccess:(NSArray *)photos {
-    self.photos = photos;
-    [self.collectionView reloadData];
-}
+#pragma mark - Event
 
-- (IBAction)_onTestTouched:(id)sender {
+- (IBAction)_onLoadTouched:(id)sender {
     self.reader = [AlbumReader reader];
     
     id failure = ^(NSError *error) {
         NSLog(@"%s %d error = %@", __FUNCTION__, __LINE__, error);
     };
     
+    __weak typeof(self) wself = self;
     id success = ^(ALAuthorizationStatus status) {
-        [self.reader readPhotos:^(NSArray *photos) {
-            [self _readPhotosSuccess:photos];
+        [wself.reader readPhotos:^(NSArray *photos) {
+            wself.photos = photos;
         } failure:failure];
     };
     
     [self.reader requestAuthorization:success failure:failure];
+}
+
+- (IBAction)_onTestTouched:(id)sender {
+    self.collectionView.hidden = NO;
+    [self.collectionView reloadData];
+}
+
+- (IBAction)_onClean:(id)sender {
+    self.collectionView.hidden = YES;
+    [self.collectionView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    
+    self.photos = nil;
+    self.reader = nil;
 }
 
 #pragma mark - UIColloectionView

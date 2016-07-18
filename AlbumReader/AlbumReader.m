@@ -7,6 +7,7 @@
 //
 
 #import "AlbumReader.h"
+#import <CommonCrypto/CommonDigest.h>
 
 @interface AlbumReaderPhoto ()
 
@@ -36,22 +37,10 @@ static NSString* const kAlbumReaderErrorDomain = @"com.albumreader.error";
 - (instancetype)init {
     self = [super init];
     if (self) {
-        [self _addObservers];
+        [self _initMembers];
     }
     
     return self;
-}
-
-- (void)dealloc {
-    [self _removeObservers];
-}
-
-- (ALAssetsLibrary *)assetsLibrary {
-    if (!_assetsLibrary) {
-        _assetsLibrary = [[ALAssetsLibrary alloc] init];
-    }
-    
-    return _assetsLibrary;
 }
 
 - (void)requestAuthorization:(AlbumReaderAuthorizedSuccessBlock)success
@@ -103,16 +92,17 @@ static NSString* const kAlbumReaderErrorDomain = @"com.albumreader.error";
         ALAssetsLibrary* assetsLibrary = self.assetsLibrary;
         [assetsLibrary assetForURL:photo.url resultBlock:^(ALAsset *asset) {
             UIImage* image = nil;
+            CGImageRef imageRef = NULL;
             if (option == AlbumReaderImageOptionFullScreen) {
                 ALAssetRepresentation* presentation = [asset defaultRepresentation];
-                CGImageRef imageRef = [presentation fullScreenImage];
+                imageRef = [presentation fullScreenImage];
                 image = [UIImage imageWithCGImage:imageRef];
             } else if (option == AlbumReaderImageOptionOriginal) {
                 ALAssetRepresentation* presentation = [asset defaultRepresentation];
-                CGImageRef imageRef = [presentation fullResolutionImage];
+                imageRef = [presentation fullResolutionImage];
                 image = [UIImage imageWithCGImage:imageRef];
             } else if (option == AlbumReaderImageOptionThumbnail) {
-                CGImageRef imageRef = [asset thumbnail];
+                imageRef = [asset thumbnail];
                 image = [UIImage imageWithCGImage:imageRef];
             }
             
@@ -124,6 +114,10 @@ static NSString* const kAlbumReaderErrorDomain = @"com.albumreader.error";
 }
 
 #pragma mark - Private
+
+- (void)_initMembers {
+    _assetsLibrary = [[ALAssetsLibrary alloc] init];
+}
 
 - (void)_addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self

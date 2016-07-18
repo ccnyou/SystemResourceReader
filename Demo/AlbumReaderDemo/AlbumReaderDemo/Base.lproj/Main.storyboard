@@ -67,15 +67,37 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="fUm-lU-bQd"/>
                                 </connections>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b5j-vO-fu0">
+                                <rect key="frame" x="137" y="170" width="46" height="30"/>
+                                <state key="normal" title="Clean"/>
+                                <connections>
+                                    <action selector="_onClean:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Vea-ge-e5o"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fti-Vv-Vw1">
+                                <rect key="frame" x="137" y="83" width="46" height="30"/>
+                                <state key="normal" title="Load"/>
+                                <connections>
+                                    <action selector="_onLoadTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="NON-fo-Tca"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="bTa-7R-bwo" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="GmS-qk-AXy"/>
+                            <constraint firstItem="bTa-7R-bwo" firstAttribute="top" secondItem="fti-Vv-Vw1" secondAttribute="bottom" constant="8" id="MzG-sM-X98"/>
+                            <constraint firstItem="b5j-vO-fu0" firstAttribute="top" secondItem="bTa-7R-bwo" secondAttribute="bottom" constant="19" id="NNc-JG-jav"/>
+                            <constraint firstItem="b5j-vO-fu0" firstAttribute="width" secondItem="bTa-7R-bwo" secondAttribute="width" id="Ofh-di-qN9"/>
                             <constraint firstItem="bTa-7R-bwo" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="101" id="QPy-wv-gKr"/>
                             <constraint firstItem="vxx-4c-LmK" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="RUr-3P-XRC"/>
+                            <constraint firstItem="b5j-vO-fu0" firstAttribute="height" secondItem="bTa-7R-bwo" secondAttribute="height" id="UY9-vk-wle"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="vxx-4c-LmK" secondAttribute="bottom" id="Uhp-jl-Kyg"/>
+                            <constraint firstItem="fti-Vv-Vw1" firstAttribute="width" secondItem="bTa-7R-bwo" secondAttribute="width" id="VxR-7c-CiT"/>
+                            <constraint firstItem="b5j-vO-fu0" firstAttribute="leading" secondItem="bTa-7R-bwo" secondAttribute="leading" id="dk1-G3-weh"/>
+                            <constraint firstItem="fti-Vv-Vw1" firstAttribute="height" secondItem="bTa-7R-bwo" secondAttribute="height" id="rB2-lH-hVu"/>
                             <constraint firstAttribute="trailingMargin" secondItem="vxx-4c-LmK" secondAttribute="trailing" constant="-20" id="tWM-zF-CGC"/>
                             <constraint firstItem="vxx-4c-LmK" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.5" id="u62-uS-XOV"/>
+                            <constraint firstItem="fti-Vv-Vw1" firstAttribute="leading" secondItem="bTa-7R-bwo" secondAttribute="leading" id="uhq-Pa-ks0"/>
                         </constraints>
                     </view>
                     <connections>

@@ -33,4 +33,7 @@ typedef NS_ENUM(NSInteger, LocationReaderAuthorization) {
 
 - (void)stopUpdatingLocation;
 
+- (void)queryLocationCity:(CLLocation *)location
+                  success:(void (^)(NSString *city))successBlock
+                  failure:(void (^)(NSError *eror))failureBlock;
 @end

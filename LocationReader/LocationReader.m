@@ -9,13 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface LocationReader () <CLLocationManagerDelegate>
-
 @property (nonatomic, strong) CLLocationManager* manager;
 @property (nonatomic, strong) LocationReaderAuthorizedSuccessBlock authorizedSuccessBlock;
 @property (nonatomic, strong) LocationReaderAuthorizedFailureBlock authorizedFailureBlock;
 @property (nonatomic, strong) LocationReaderUpdateSuccessBlock updateSuccessBlock;
 @property (nonatomic, strong) LocationReaderUpdateFailureBlock updateFailureBlock;
-
 @end
 
 @implementation LocationReader
@@ -87,6 +85,27 @@
 
 - (void)stopUpdatingLocation {
     [self.manager stopUpdatingLocation];
+}
+
+// 根据经纬度反向得出位置城市信息
+- (void)queryLocationCity:(CLLocation *)location
+                  success:(void (^)(NSString *city))successBlock
+                  failure:(void (^)(NSError *eror))failureBlock
+{
+    CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
+    [geoCoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
+        if (placemarks.count > 0) {
+            CLPlacemark *placeMark = placemarks[0];
+            NSString *currentCity = placeMark.locality;
+            if (successBlock) {
+                successBlock(currentCity);
+            }
+        } else {
+            if (failureBlock) {
+                failureBlock(error);
+            }
+        }
+    }];
 }
 
 #pragma mark - Private
